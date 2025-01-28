@@ -125,21 +125,32 @@
     <div id="wishDisplay" class="wish-display"></div>
 
     <script>
-        const wishes = [
-            "Chúc bé Duyên một năm mới an khang thịnh vượng!",
-            "Chúc bé Duyên sức khỏe dồi dào, vạn sự như ý!",
-            "Chúc mọi điều tốt lành đến với bé Duyên và gia đình!",
-            "Chúc bé Duyên thành công rực rỡ trong năm mới!",
-            "Chúc bé Duyên một năm tràn đầy hạnh phúc và niềm vui!",
-            "Chúc bé Duyên ngày càng dễ thương, học giỏi!",
+        // Mảng lời chúc với trọng số
+        const weightedWishes = [
+            { wish: "Chúc bé Duyên một năm mới an khang thịnh vượng!", weight: 1 },
+            { wish: "Chúc bé Duyên sức khỏe dồi dào, vạn sự như ý!", weight: 1 },
+            { wish: "Chúc mọi điều tốt lành đến với bé Duyên và gia đình!", weight: 1 },
+            { wish: "Chúc bé Duyên thành công rực rỡ trong năm mới!", weight: 1 },
+            { wish: "Chúc bé Duyên một năm tràn đầy hạnh phúc và niềm vui!", weight: 1 },
+            { wish: "Chúc bé Duyên ngày càng dễ thương, học giỏi!", weight: 5 } // Tăng trọng số
         ];
 
         function showWish() {
-            const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+            // Tạo mảng mở rộng dựa trên trọng số
+            const expandedWishes = [];
+            weightedWishes.forEach(item => {
+                for (let i = 0; i < item.weight; i++) {
+                    expandedWishes.push(item.wish);
+                }
+            });
+
+            // Chọn ngẫu nhiên một câu chúc từ mảng mở rộng
+            const randomWish = expandedWishes[Math.floor(Math.random() * expandedWishes.length)];
             const wishDisplay = document.getElementById('wishDisplay');
             wishDisplay.textContent = randomWish;
             wishDisplay.classList.add('show');
 
+            // Hiển thị trong 3 giây rồi ẩn
             setTimeout(() => {
                 wishDisplay.classList.remove('show');
             }, 3000);
