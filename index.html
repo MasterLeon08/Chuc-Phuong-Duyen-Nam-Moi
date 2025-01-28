@@ -8,7 +8,7 @@
         body {
             margin: 0;
             background-color: #ff0000;
-            background-image: url('https://nguyencongpc.vn/media/news/2612_hinh-nen-tet-2025-8.jpg');
+            background-image: url('https://nguyencongpc.vn/media/news/2612_hinh-nen-tet-2025-8.jpg'); 
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -59,10 +59,19 @@
             height: 5px;
             background-color: white;
             border-radius: 50%;
-            animation: flyUp 1.5s linear forwards;
+            animation: explode 1.5s ease-out forwards;
         }
 
-        @keyframes flyUp {
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: white;
+            border-radius: 50%;
+            animation: particleMove 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
             0% {
                 transform: translateY(100vh);
                 opacity: 1;
@@ -71,9 +80,40 @@
                 opacity: 1;
             }
             100% {
-                transform: translateY(-10vh);
+                transform: translateY(20vh);
                 opacity: 0;
             }
+        }
+
+        @keyframes particleMove {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .wish-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #ffd700;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .wish-display.show {
+            display: block;
         }
     </style>
 </head>
@@ -82,32 +122,62 @@
     <p>Click vào nút dưới đây để nhận lời chúc:</p>
     <button onclick="showWish()">Nhận Lời Chúc</button>
 
+    <div id="wishDisplay" class="wish-display"></div>
+
     <script>
         const wishes = [
             "Chúc bé Duyên một năm mới an khang thịnh vượng!",
             "Chúc bé Duyên sức khỏe dồi dào, vạn sự như ý!",
             "Chúc mọi điều tốt lành đến với bé Duyên và gia đình!",
             "Chúc bé Duyên thành công rực rỡ trong năm mới!",
-            "Chúc bé Duyên năm tràn đầy hạnh phúc và niềm vui!"
+            "Chúc bé Duyên một năm tràn đầy hạnh phúc và niềm vui!"
+            "Chúc bé Duyên ngày càng dễ thương, học giỏi"
         ];
 
         function showWish() {
             const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
-            alert(randomWish);
+            const wishDisplay = document.getElementById('wishDisplay');
+            wishDisplay.textContent = randomWish;
+            wishDisplay.classList.add('show');
+
+            setTimeout(() => {
+                wishDisplay.classList.remove('show');
+            }, 3000);
+
             createFirework();
         }
 
         function createFirework() {
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 10; i++) {
                 const firework = document.createElement('div');
                 firework.className = 'firework';
                 firework.style.left = Math.random() * window.innerWidth + 'px';
-                firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                firework.style.top = Math.random() * window.innerHeight * 0.7 + 'px';
                 document.body.appendChild(firework);
 
-                firework.addEventListener('animationend', () => {
+                setTimeout(() => {
+                    for (let j = 0; j < 30; j++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = firework.style.left;
+                        particle.style.top = firework.style.top;
+
+                        const angle = Math.random() * 2 * Math.PI;
+                        const distance = Math.random() * 100 + 50;
+
+                        particle.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+                        particle.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+                        particle.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+                        document.body.appendChild(particle);
+
+                        particle.addEventListener('animationend', () => {
+                            particle.remove();
+                        });
+                    }
+
                     firework.remove();
-                });
+                }, 1500);
             }
         }
     </script>
